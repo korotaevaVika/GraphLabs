@@ -11,8 +11,16 @@ namespace Graphs_Labs
             string pathOutput = @"C:\Users\Виктория\Desktop\out.txt";
 
             Graph myGrapg = new Graph(pathInput, pathOutput, pathPrint);
-            myGrapg.Delete(4);
+
+            myGrapg.Smart_Delete(1);
+            myGrapg.Smart_Delete(0);
+            myGrapg.Smart_Add(1, 2);
+            myGrapg.Smart_Add(1, 1);
+            myGrapg.Smart_Add(2, 2);
+
+            myGrapg.PrintToFile();
             myGrapg.PrintToGraph();
+            //myGrapg.OpenFolder(pathPrint);
             Console.ReadKey();
         }
     }
