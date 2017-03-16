@@ -12,7 +12,7 @@ using System.Diagnostics;
 
 namespace Graphs_Labs
 {
-    public class Graph
+    public class ListOfArcs
     {
         private int m, n;
         private int[] H, L;
@@ -24,8 +24,14 @@ namespace Graphs_Labs
         private string pathOutput;
         private string pathPrint;
         private string message;
+        
+        #region Properties
+        public int[] VertexI { get { return I; } }
+        public int[] VertexJ { get { return J; } }
+        public int QuantityVertex { get { return n; } }
+        #endregion Properties
 
-        public Graph(string pathInput, string pathOutput, string pathPrint)
+        public ListOfArcs(string pathInput, string pathOutput, string pathPrint)
         {
             this.pathInput = pathInput;
             this.pathOutput = pathOutput;
@@ -33,7 +39,6 @@ namespace Graphs_Labs
             this.message = string.Empty;
             free = -1;
             Init(this.pathInput);
-
         }
 
         private void Init(string pathInput)
@@ -291,7 +296,7 @@ namespace Graphs_Labs
             if (I.Length != 0 && number < m)
             {
                 message = "Delete (" + I[number] + "\t" + J[number] + ")";
-                
+
                 int i = I[number];
                 for (int k = H[i]; k != -1; k = L[k])
                 {
@@ -427,6 +432,6 @@ namespace Graphs_Labs
                 Console.WriteLine(string.Format("{0} Directory does not exist!", folderPath));
             }
         }
-
     }
+
 }

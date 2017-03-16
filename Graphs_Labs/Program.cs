@@ -10,8 +10,12 @@ namespace Graphs_Labs
             string pathPrint = @"C:\Users\Виктория\Desktop\graphViz.png";
             string pathOutput = @"C:\Users\Виктория\Desktop\out.txt";
 
-            Graph myGrapg = new Graph(pathInput, pathOutput, pathPrint);
+            ListOfArcs myGrapg = new ListOfArcs(pathInput, pathOutput, pathPrint);
 
+            ListOfEdges edgesG = new ListOfEdges(myGrapg.QuantityVertex, myGrapg.VertexI, myGrapg.VertexJ);
+            edgesG.ConnectivityСomponentAlg();
+            /*
+            //BEGIN Test Graph Structure - Список пучков дуг
             myGrapg.Smart_Delete(1);
             myGrapg.Smart_Delete(0);
             myGrapg.Smart_Add(1, 2);
@@ -21,6 +25,8 @@ namespace Graphs_Labs
             myGrapg.PrintToFile();
             myGrapg.PrintToGraph();
             //myGrapg.OpenFolder(pathPrint);
+            //END Test Graph Structure - Список пучков дуг 
+            */
             Console.ReadKey();
         }
     }
