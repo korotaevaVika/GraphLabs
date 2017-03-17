@@ -24,7 +24,7 @@ namespace Graphs_Labs
         private string pathOutput;
         private string pathPrint;
         private string message;
-        
+
         #region Properties
         public int[] VertexI { get { return I; } }
         public int[] VertexJ { get { return J; } }
@@ -40,6 +40,28 @@ namespace Graphs_Labs
             free = -1;
             Init(this.pathInput);
         }
+
+        public ListOfArcs(
+            int[] I,
+            int[] J,
+            int[] H,
+            int[] L,
+            int free,
+            int n,
+            string pathOutput,
+            string pathPrint)
+        {
+            this.I = I;
+            this.J = J;
+            this.H = H;
+            this.L = L;
+            this.m = I.Length;
+            this.n = n;
+            this.free = free;
+            this.pathOutput = pathOutput;
+            this.pathPrint = pathPrint;
+        }
+
 
         private void Init(string pathInput)
         {
@@ -127,9 +149,9 @@ namespace Graphs_Labs
             if (free == -1)
             {
                 int[] I_1, J_1, L_1;
-                I_1 = new int[m + 1];
-                J_1 = new int[m + 1];
-                L_1 = new int[m + 1];
+                I_1 = new int[m * 2];
+                J_1 = new int[m * 2];
+                L_1 = new int[m * 2];
 
                 for (int p = 0; p < m; p++)
                 {
@@ -137,6 +159,16 @@ namespace Graphs_Labs
                     J_1[p] = J[p];
                     L_1[p] = L[p];
                 }
+                for (int h = m; h < 2 * m; h++)
+                {
+                    L_1[h] = free;
+                    free = h;
+                }
+                L = L_1;
+                I = I_1;
+                J = J_1;
+
+                /*
                 I_1[m] = i;
                 J_1[m] = j;
                 L = L_1;
@@ -159,10 +191,10 @@ namespace Graphs_Labs
                             break;
                         }
                     }
-                }
-                m++;
+                }*/
+                m *= 2;
             }
-            else
+
             {
                 var fut_free = L[free];
 
@@ -177,15 +209,18 @@ namespace Graphs_Labs
                 }
                 else
                 {
-                    for (int k = H[i]; k != -1; k = L[k])
-                    {
-                        if (L[k] == -1)
-                        {
-                            L[k] = pos;
-                            L[pos] = -1;
-                            break;
-                        }
-                    }
+                    L[free] = H[i];
+                    H[i] = pos;
+
+                    //for (int k = H[i]; k != -1; k = L[k])
+                    //{
+                    //    if (L[k] == -1)
+                    //    {
+                    //        L[k] = pos;
+                    //        L[pos] = -1;
+                    //        break;
+                    //    }
+                    //}
                 }
 
                 free = fut_free;
@@ -318,15 +353,17 @@ namespace Graphs_Labs
                 }
                 else
                 {
-                    for (int k = free; k != -1; k = L[k])
-                    {
-                        if (L[k] == -1)
-                        {
-                            L[k] = number;
-                            break;
-                        }
-                    }
-                    L[number] = -1;
+                    L[number] = free;
+                    free = number;
+                    //for (int k = free; k != -1; k = L[k])
+                    //{
+                    //    if (L[k] == -1)
+                    //    {
+                    //        L[k] = number;
+                    //        break;
+                    //    }
+                    //}
+                    //L[number] = -1;
                 }
 
                 message = string.Empty;
@@ -431,6 +468,11 @@ namespace Graphs_Labs
             {
                 Console.WriteLine(string.Format("{0} Directory does not exist!", folderPath));
             }
+        }
+
+        public ListOfArcs Clone()
+        {
+            return new ListOfArcs(I, J, H, L, free, n, this.pathOutput, this.pathPrint);
         }
     }
 
