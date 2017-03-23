@@ -58,9 +58,35 @@ namespace Graphs_Labs
             edgesWithWeigh.PrintToGraph(ResultGraphAfterUsingAlgorithms.GraphAfterAlgKraskala);
         }
 
+        static void TestBreadthFirstSearch()
+        {
+            string pathInput = @"C:\Users\Виктория\Desktop\graph.txt";
+            string pathPrint = @"C:\Users\Виктория\Desktop\graphViz.png";
+            string pathOutput = @"C:\Users\Виктория\Desktop\out.txt";
+
+            ListOfArcs myGrapg = new ListOfArcs(pathInput, pathOutput, pathPrint);
+            ListOfEdges edgesG = new ListOfEdges(myGrapg.QuantityVertex, myGrapg.VertexI, myGrapg.VertexJ);
+            int s = 2;
+            edgesG.BreadthFirstSearch(s);
+        }
+
+        static void TestBreadthFirstSearchForThreeVertexes()
+        {
+            string pathInput = @"C:\Users\Виктория\Desktop\graph.txt";
+            string pathPrint = @"C:\Users\Виктория\Desktop\graphViz.png";
+            string pathOutput = @"C:\Users\Виктория\Desktop\out.txt";
+
+            ListOfArcs myGrapg = new ListOfArcs(pathInput, pathOutput, pathPrint);
+            myGrapg.PrintToGraph();
+            ListOfEdges edgesG = new ListOfEdges(myGrapg.QuantityVertex, myGrapg.VertexI, myGrapg.VertexJ);
+            
+            edgesG.BreadthFirstSearch(3, 4, 7);
+        }
+
         static void Main(string[] args)
         {
-            TestAlgKraskala();
+           // TestBreadthFirstSearch();
+            TestBreadthFirstSearchForThreeVertexes();
             Console.ReadKey();
         }
     }

@@ -1,8 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using GraphVizWrapper;
 using GraphVizWrapper.Commands;
 using GraphVizWrapper.Queries;
@@ -99,50 +95,7 @@ namespace Graphs_Labs
                              // списке i
             } // списки 
         }
-        /*
-        public void Add(int i, int j)
-        {
-            message = "Add (" + i + "\t " + j + ")";
-            int[] I_1, J_1, L_1;
-            I_1 = new int[m + 1];
-            J_1 = new int[m + 1];
-            L_1 = new int[m + 1];
 
-            for (int p = 0; p < m; p++)
-            {
-                I_1[p] = I[p];
-                J_1[p] = J[p];
-                L_1[p] = L[p];
-            }
-            I_1[m] = i;
-            J_1[m] = j;
-            L = L_1;
-            I = I_1;
-            J = J_1;
-
-            if (H[i] == -1)
-            {
-                H[i] = m;
-                L[m] = -1;
-            }
-            else
-            {
-                for (int k = H[i]; k != -1; k = L[k])
-                {
-                    if (L[k] == -1)
-                    {
-                        L[k] = m;
-                        L[m] = -1;
-                        break;
-                    }
-                }
-            }
-
-            m++;
-            PrintToFile();
-            PrintToGraph();
-        }
-        */
         public void Smart_Add(int i, int j)
         {
             message = "Add (" + i + "\t " + j + ")";
@@ -168,30 +121,7 @@ namespace Graphs_Labs
                 I = I_1;
                 J = J_1;
 
-                /*
-                I_1[m] = i;
-                J_1[m] = j;
-                L = L_1;
-                I = I_1;
-                J = J_1;
 
-                if (H[i] == -1)
-                {
-                    H[i] = m;
-                    L[m] = -1;
-                }
-                else
-                {
-                    for (int k = H[i]; k != -1; k = L[k])
-                    {
-                        if (L[k] == -1)
-                        {
-                            L[k] = m;
-                            L[m] = -1;
-                            break;
-                        }
-                    }
-                }*/
                 m *= 2;
             }
 
@@ -211,16 +141,6 @@ namespace Graphs_Labs
                 {
                     L[free] = H[i];
                     H[i] = pos;
-
-                    //for (int k = H[i]; k != -1; k = L[k])
-                    //{
-                    //    if (L[k] == -1)
-                    //    {
-                    //        L[k] = pos;
-                    //        L[pos] = -1;
-                    //        break;
-                    //    }
-                    //}
                 }
 
                 free = fut_free;
@@ -229,103 +149,7 @@ namespace Graphs_Labs
             PrintToFile();
             PrintToGraph();
         }
-        /*
-        public void Delete(int number)
-        {
-            if (I.Length != 0 && number < m)
-            {
-                message = "Delete (" + I[number] + "\t" + J[number] + ")";
-                int[] I_1, J_1, L_1;
-                I_1 = new int[m - 1];
-                J_1 = new int[m - 1];
-                L_1 = new int[m - 1];
 
-                for (int p = 0; p < m - 1; p++)
-                {
-                    if (p < number)
-                    {
-                        I_1[p] = I[p];
-                        J_1[p] = J[p];
-                        L_1[p] = L[p];
-                    }
-                    else
-                    {
-                        I_1[p] = I[p + 1];
-                        J_1[p] = J[p + 1];
-                        L_1[p] = (L[p + 1] == -1 ? L[p + 1] : (L[p + 1] > number) ? L[p + 1] - 1 : L[p + 1]);
-                    }
-                }
-                int[] H_1 = new int[n];
-
-                for (int p = 0; p < n; p++)
-                {
-                    if (H[p] != -1 && H[p] > number)
-                    {
-                        H_1[p] = H[p] - 1;
-                    }
-                    else H_1[p] = H[p];
-                }
-                //int count = 0;
-                int i = I[number];
-                for (int k = H[i]; L[k] != -1; k = L[k])
-                {
-                    if (H[i] == number)
-                    {
-                        H_1[i] = L[k];
-                        break;
-                    }
-                    if (L[k] == number)
-                    {
-
-                        if (L[L[k]] == -1)
-                        {
-                            if (k < number)
-                            {
-                                L_1[k] = -1;
-                            }
-                            else
-                            {
-                                L_1[k - 1] = -1;
-                            }
-                        }
-                        else
-                            if ((L[L[k]] < number))
-                        {
-                            if (k < number)
-                            {
-                                L_1[k] = L[L[k]];
-                            }
-                            else
-                            {
-                                L_1[k - 1] = L[L[k]];
-                            }
-                        }
-                        else if ((L[L[k]] > number))
-                        {
-                            if (k < number)
-                            {
-                                L_1[k] = L[L[k]] - 1;
-                            }
-                            else
-                            {
-                                L_1[k - 1] = L[L[k]] - 1;
-                            }
-                        }
-                        break;
-                    }
-                }
-
-                I = I_1;
-                J = J_1;
-                L = L_1;
-                H = H_1;
-                m--;
-                PrintToFile();
-                PrintToGraph();
-                message = string.Empty;
-            }
-        }
-        */
         public void Smart_Delete(int number)
         {
             if (I.Length != 0 && number < m)
@@ -474,6 +298,8 @@ namespace Graphs_Labs
         {
             return new ListOfArcs(I, J, H, L, free, n, this.pathOutput, this.pathPrint);
         }
+
+
     }
 
 }
