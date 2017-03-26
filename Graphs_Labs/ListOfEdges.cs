@@ -82,6 +82,7 @@ namespace Graphs_Labs
             this.pathPrint = pathPrint;
             InitFromFile(pathInput);
         }
+
         private void InitFromFile(string pathInput)
         {
             string[] lines = File.ReadAllLines(pathInput);
@@ -375,5 +376,75 @@ namespace Graphs_Labs
 
         }
 
+        public void AlgDeikstra(int s)
+        {
+            int[] R = new int[n];//Distances
+            int[] P = new int[n];//Ancestor
+            int[] Q = new int[n];//Queue
+            int h_Q, i;
+            for (i = 0; i < n; i++)
+            {
+                R[i] = int.MaxValue;
+                P[i] = -2;  // Все вершины недоступны
+            }
+
+            R[s] = 0;
+            P[s] = -1;
+
+            h_Q = s;       //First in a queue
+            Q[s] = -1;
+
+            int min, pi, pj, j;
+            pi = -1;
+
+            while (h_Q != -1) // While queue is not empty
+            {
+                //ВЫБОР ВЕРШИНЫ С МИНИМАЛЬНЫМ ТЕКУЩИМ РАССТОЯНИЕМ
+                min = int.MaxValue;
+                //j  – текущая вершина при проходе по списку
+                //pj - предыдущая при проходе по списку
+                for (pj = -1, j = h_Q; j != -1; pj = j, j = Q[j])
+                {
+                    if (R[j] < min)
+                    {
+                        min = R[j]; //новый минимум
+                        pi = pj;  //достигается на вершине,
+                                  //следующей за pi
+                    }
+                }
+
+                if (pi != -1)
+                {
+                    i = Q[pi];
+                    Q[pi] = Q[i]; // Удаляем i из списка
+                }
+                else
+                { // i – первая в списке
+                    i = h_Q;
+                    h_Q = Q[i]; //Передвигаем начало списка
+                }
+
+                // Просмотр дуг, выходящих из вершины i
+                for (int k = H[i]; k != -1; k = L[k])
+                {
+                    j = IJ[2 * m - 1 - k]; // Противоположная вершина
+
+                    int rj = R[j];
+                    if (R[i] + W[k] < rj)
+                    { // Основное соотношение нарушено
+                        R[j] = R[i] + W[k]; //Новое текущее
+                                            //расстояние до j
+                        P[j] = k;    //Последняя дуга на пути
+                                     //из s в j 
+                        if (rj == int.MaxValue) // j была не помечена
+                        { // Добавляем j в Q
+                            Q[j] = h_Q;
+                            h_Q = j;
+                        }
+                    }
+                }
+            }
+        }
     }
+
 }

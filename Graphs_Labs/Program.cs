@@ -93,6 +93,7 @@ namespace Graphs_Labs
 
             ListOfEdges myGrapg = new ListOfEdges(pathInput, pathOutput, pathPrint);
             myGrapg.Print();
+            myGrapg.AlgDeikstra(0);
             Console.ReadKey();
         }
     }
