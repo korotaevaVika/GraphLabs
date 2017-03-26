@@ -79,14 +79,20 @@ namespace Graphs_Labs
             ListOfArcs myGrapg = new ListOfArcs(pathInput, pathOutput, pathPrint);
             myGrapg.PrintToGraph();
             ListOfEdges edgesG = new ListOfEdges(myGrapg.QuantityVertex, myGrapg.VertexI, myGrapg.VertexJ);
-            
+
             edgesG.BreadthFirstSearch(3, 4, 7);
         }
 
         static void Main(string[] args)
         {
-           // TestBreadthFirstSearch();
-            TestBreadthFirstSearchForThreeVertexes();
+            // TestBreadthFirstSearch();
+            // TestBreadthFirstSearchForThreeVertexes();
+            string pathInput = @"C:\Users\Виктория\Desktop\graph.txt";
+            string pathPrint = @"C:\Users\Виктория\Desktop\graphViz.png";
+            string pathOutput = @"C:\Users\Виктория\Desktop\out.txt";
+
+            ListOfEdges myGrapg = new ListOfEdges(pathInput, pathOutput, pathPrint);
+            myGrapg.Print();
             Console.ReadKey();
         }
     }

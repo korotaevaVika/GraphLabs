@@ -179,15 +179,6 @@ namespace Graphs_Labs
                 {
                     L[number] = free;
                     free = number;
-                    //for (int k = free; k != -1; k = L[k])
-                    //{
-                    //    if (L[k] == -1)
-                    //    {
-                    //        L[k] = number;
-                    //        break;
-                    //    }
-                    //}
-                    //L[number] = -1;
                 }
 
                 message = string.Empty;

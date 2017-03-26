@@ -1,14 +1,21 @@
-﻿using System;
+﻿using GraphVizWrapper;
+using GraphVizWrapper.Commands;
+using GraphVizWrapper.Queries;
+using System;
 using System.Collections.Generic;
+using System.Drawing.Imaging;
+using System.IO;
 
 namespace Graphs_Labs
 {
     public class ListOfEdges
     {
         private int[] IJ, L, H, _stack, _color;
+        private int[] W;    //Weights
         private int m, n;
         private int w, componentNumber;
-        private int[] Hn; //– номер первого непросмотренного ребра, выходящего из вершины 
+        private int[] Hn;   //номер первого непросмотренного ребра, выходящего из вершины 
+        private string pathPrint;
 
         public ListOfEdges(int n, int[] I, int[] J)
         {
@@ -28,6 +35,84 @@ namespace Graphs_Labs
                 IJ[k] = I[k];
                 IJ[2 * m - 1 - k] = J[k];
             }
+            // Обход ребер сети
+            for (int k = 0; k < 2 * m; k++)
+            {
+                int i = IJ[k]; // один из концов ребра
+                // добавляем ребро в начало списка i
+                L[k] = H[i];
+                H[i] = k;
+            }
+            Hn = H;
+        }
+
+        public ListOfEdges(int n, int[] I, int[] J, int[] WeightArray)
+        {
+            this.n = n;
+            this.m = I.Length;
+
+            IJ = new int[2 * m];
+            H = new int[n];
+            L = new int[2 * m];
+            _stack = new int[n];
+            _color = new int[n];
+            W = new int[2 * m];
+
+            for (int i = 0; i < n; i++) { H[i] = _color[i] = -1; }
+
+            for (int k = 0; k < m; k++)
+            {
+                IJ[k] = I[k];
+                IJ[2 * m - 1 - k] = J[k];
+                W[k] = W[2 * m - 1 - k] = WeightArray[k];
+            }
+            // Обход ребер сети
+            for (int k = 0; k < 2 * m; k++)
+            {
+                int i = IJ[k]; // один из концов ребра
+                // добавляем ребро в начало списка i
+                L[k] = H[i];
+                H[i] = k;
+            }
+            Hn = H;
+        }
+
+        public ListOfEdges(string pathInput, string pathOutput, string pathPrint)
+        {
+            this.pathPrint = pathPrint;
+            InitFromFile(pathInput);
+        }
+        private void InitFromFile(string pathInput)
+        {
+            string[] lines = File.ReadAllLines(pathInput);
+            foreach (var item in lines)
+            {
+                item.Trim();
+            }
+            n = int.Parse(lines[0].Split(' ')[0]);
+            m = int.Parse(lines[0].Split(' ')[1]);
+
+            bool AreWeightGiven;
+            AreWeightGiven = bool.TryParse(lines[0].Split(' ')[2], out AreWeightGiven);
+
+            if (AreWeightGiven) W = new int[2 * m];
+
+            IJ = new int[2 * m];
+
+            for (int k = 1; k <= m; k++)
+            {
+                string[] args = lines[k].Split(' ');
+                IJ[k - 1] = int.Parse(args[0]);
+                IJ[2 * m - k] = int.Parse(args[1]);
+                if (AreWeightGiven) W[k - 1] = W[2 * m - k] = int.Parse(args[2]);
+            }
+
+            H = new int[n];
+            L = new int[2 * m];
+            _stack = new int[n];
+            _color = new int[n];
+
+            for (int i = 0; i < n; i++) { H[i] = _color[i] = -1; }
             // Обход ребер сети
             for (int k = 0; k < 2 * m; k++)
             {
@@ -95,13 +180,13 @@ namespace Graphs_Labs
         public void BreadthFirstSearch(int a, int b, int c)
         {
             int[,] R, P, Q;
-            int[] color;
+            int[] colorForBFSearch;
             Dictionary<Tuple<int, int>, int> results = new Dictionary<Tuple<int, int>, int>();
 
             R = new int[n, 3];
             P = new int[n, 3];
             Q = new int[n, 3];
-            color = new int[n];
+            colorForBFSearch = new int[n];
 
             int read = 0;
             int[] writeArr = new int[3];
@@ -119,11 +204,11 @@ namespace Graphs_Labs
                 P[m, 1] = -2;
                 P[m, 2] = -2;
 
-                color[m] = -1;
+                colorForBFSearch[m] = -1;
             }
-            color[a] = a;
-            color[b] = b;
-            color[c] = c;
+            colorForBFSearch[a] = a;
+            colorForBFSearch[b] = b;
+            colorForBFSearch[c] = c;
 
             R[a, 0] = 0;
             R[b, 1] = 0;
@@ -164,16 +249,17 @@ namespace Graphs_Labs
                             Q[writeArr[t], t] = j_vertex[t];
                             writeArr[t]++;
 
-                            if (color[j_vertex[t]] == -1)
+                            if (colorForBFSearch[j_vertex[t]] == -1)
                             {
-                                color[j_vertex[t]] = vertexes[t];
+                                colorForBFSearch[j_vertex[t]] = vertexes[t];
                             }
                             else
                             {
-                                int way = R[j_vertex[t], t] + R[j_vertex[t], Array.IndexOf<int>(vertexes, color[j_vertex[t]])];
+                                int way = R[j_vertex[t], t] +
+                                    R[j_vertex[t], Array.IndexOf<int>(vertexes, colorForBFSearch[j_vertex[t]])];
                                 try
                                 {
-                                    results.Add(new Tuple<int, int>(vertexes[t], color[j_vertex[t]]), way);
+                                    results.Add(new Tuple<int, int>(vertexes[t], colorForBFSearch[j_vertex[t]]), way);
                                 }
                                 catch { }
                             }
@@ -209,8 +295,7 @@ namespace Graphs_Labs
                 componentNumber++; //Номер текущей компоненты связности
                 currentVertex = i; // i – текущая вершина
 
-                while (true) //Пока не попробуем сделать шаг 
-                             //назад при пустом стеке
+                while (true)
                 {
                     _color[currentVertex] = componentNumber; //Помечаем текущую вершину
 
@@ -233,21 +318,62 @@ namespace Graphs_Labs
                     else
                     {// ШАГ НАЗАД
                         if (w == 0) break;
-                        //Стек пуст. Обошли всю компоненту.
-                        //Выходим из цикла While(1)
                         else
-                        {  //Стек не пуст 
+                        {
                             w--;  //Перемещаем указатель стека
                             currentVertex = _stack[w]; //Берем из стека 
                                                        //последнюю вершину
                         }
                         //Сделали шаг назад
                     }
-                    //После шага вперед или назад переходим к 
-                    //просмотру дуг из новой текущей вершины i
                 }
             }
 
         }
+
+        public void Print()
+        {
+
+            // These three instances can be injected via the IGetStartProcessQuery, 
+            //                                               IGetProcessStartInfoQuery and 
+            //                                               IRegisterLayoutPluginCommand interfaces
+
+            var getStartProcessQuery = new GetStartProcessQuery();
+            var getProcessStartInfoQuery = new GetProcessStartInfoQuery();
+            var registerLayoutPluginCommand = new RegisterLayoutPluginCommand(getProcessStartInfoQuery, getStartProcessQuery);
+
+            // GraphGeneration can be injected via the IGraphGeneration interface
+
+            var wrapper = new GraphGeneration(getStartProcessQuery,
+                                              getProcessStartInfoQuery,
+                                              registerLayoutPluginCommand);
+            string description = "digraph{";
+            if (W != null)
+            {
+                for (int t = 0; t < m; t++)
+                {
+                    description += IJ[t] + " -> " + IJ[2 * m - 1 - t] + " [label=" + W[t] + ",weight=" + W[t] + "] ;";
+                }
+            }
+            else
+            {
+                for (int t = 0; t < m; t++)
+                {
+                    description += IJ[t] + " -> " + IJ[2 * m - 1 - t] + " ;";
+                }
+            }
+
+            description += "}";
+
+
+            byte[] output = wrapper.GenerateGraph(description, Enums.GraphReturnType.Png);
+            using (Stream ms = new MemoryStream(output))
+            {
+                System.Drawing.Image i = System.Drawing.Image.FromStream(ms);
+                i.Save(pathPrint, ImageFormat.Png);
+            }
+
+        }
+
     }
 }
