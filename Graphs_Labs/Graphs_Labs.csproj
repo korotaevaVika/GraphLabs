@@ -52,6 +52,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Buckets.cs" />
     <Compile Include="Graph.cs" />
     <Compile Include="ListOfEdges.cs" />
     <Compile Include="ListOfEdgesWithWeigh.cs" />

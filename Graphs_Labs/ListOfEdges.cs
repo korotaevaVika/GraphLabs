@@ -16,7 +16,7 @@ namespace Graphs_Labs
         private int w, componentNumber;
         private int[] Hn;   //номер первого непросмотренного ребра, выходящего из вершины 
         private string pathPrint;
-
+        private int C;  //max length of edge
         public ListOfEdges(int n, int[] I, int[] J)
         {
             this.n = n;
@@ -57,6 +57,7 @@ namespace Graphs_Labs
             _stack = new int[n];
             _color = new int[n];
             W = new int[2 * m];
+            C = 0;
 
             for (int i = 0; i < n; i++) { H[i] = _color[i] = -1; }
 
@@ -65,6 +66,10 @@ namespace Graphs_Labs
                 IJ[k] = I[k];
                 IJ[2 * m - 1 - k] = J[k];
                 W[k] = W[2 * m - 1 - k] = WeightArray[k];
+                if (C < WeightArray[k])
+                {
+                    C = WeightArray[k];
+                }
             }
             // Обход ребер сети
             for (int k = 0; k < 2 * m; k++)
@@ -96,7 +101,7 @@ namespace Graphs_Labs
             bool AreWeightGiven;
             AreWeightGiven = bool.TryParse(lines[0].Split(' ')[2], out AreWeightGiven);
 
-            if (AreWeightGiven) W = new int[2 * m];
+            if (AreWeightGiven) { W = new int[2 * m]; C = 0; }
 
             IJ = new int[2 * m];
 
@@ -105,7 +110,11 @@ namespace Graphs_Labs
                 string[] args = lines[k].Split(' ');
                 IJ[k - 1] = int.Parse(args[0]);
                 IJ[2 * m - k] = int.Parse(args[1]);
-                if (AreWeightGiven) W[k - 1] = W[2 * m - k] = int.Parse(args[2]);
+                if (AreWeightGiven)
+                {
+                    W[k - 1] = W[2 * m - k] = int.Parse(args[2]);
+                    if (C < W[k - 1]) { C = W[k - 1]; }
+                }
             }
 
             H = new int[n];
@@ -445,6 +454,41 @@ namespace Graphs_Labs
                 }
             }
         }
-    }
 
+        public void AlgDeikstraWithBuckets(int s)
+        {
+            int[] R = new int[n];//Distances
+            int[] P = new int[n];//Ancestor
+
+            int j, i, rj;
+            for (i = 0; i < n; i++)
+            {
+                R[i] = int.MaxValue;
+                P[i] = -2;  // Все вершины недоступны
+            }
+
+            R[s] = 0;
+            P[s] = -1;
+
+            int M = n * C;       // Максимальное число черпаков
+            Buckets buckets = new Buckets(M + 1);
+            buckets.InsertVertexIntoBucket(s, 0);
+
+            for (int b = 0; b <= M; b++)
+                while ((i = buckets.GetVertexFromBucket(b)) != -1)
+                    for (int k = H[i]; k != -1; k = L[k])
+                    {
+                        j = IJ[2 * m - 1 - k];
+                        rj = R[j];
+                        if (R[i] + W[k] < rj)
+                        {
+                            R[j] = R[i] + W[k];
+                            P[j] = k;
+                            if (rj != int.MaxValue) // j помечена и находится в черпаке rj
+                                buckets.RemoveVertexFromBucket(j, rj);
+                            buckets.InsertVertexIntoBucket(j, R[j]);  //  j в новый черпак
+                        }
+                    }
+        }
+    }
 }
