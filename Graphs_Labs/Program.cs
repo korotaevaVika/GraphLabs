@@ -83,19 +83,30 @@ namespace Graphs_Labs
             edgesG.BreadthFirstSearch(3, 4, 7);
         }
 
-        static void Main(string[] args)
+        static void TestAlgDeikstraWithBuckets()
         {
-            // TestBreadthFirstSearch();
-            // TestBreadthFirstSearchForThreeVertexes();
             string pathInput = @"C:\Users\Виктория\Desktop\graph.txt";
             string pathPrint = @"C:\Users\Виктория\Desktop\graphViz.png";
             string pathOutput = @"C:\Users\Виктория\Desktop\out.txt";
 
             ListOfEdges myGrapg = new ListOfEdges(pathInput, pathOutput, pathPrint);
             myGrapg.Print();
-           // myGrapg.AlgDeikstra(0);
+            // myGrapg.AlgDeikstra(0);
             myGrapg.AlgDeikstraWithBuckets(0);
+        }
+        static void Main(string[] args)
+        {
+            // TestBreadthFirstSearch();
+            // TestBreadthFirstSearchForThreeVertexes();
+            //TestAlgDeikstraWithBuckets();
+
+            Heap heap = new Heap(new int[5] { 17, 525, 12, 51, 2 }, 5);
+            heap.Sort();
+
             Console.ReadKey();
+
+
+
         }
     }
 

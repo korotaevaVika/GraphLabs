@@ -54,6 +54,7 @@
   <ItemGroup>
     <Compile Include="Buckets.cs" />
     <Compile Include="Graph.cs" />
+    <Compile Include="Heap.cs" />
     <Compile Include="ListOfEdges.cs" />
     <Compile Include="ListOfEdgesWithWeigh.cs" />
     <Compile Include="Program.cs" />
