@@ -101,7 +101,7 @@ namespace Graphs_Labs
             //TestAlgDeikstraWithBuckets();
 
             Heap heap = new Heap(new int[5] { 17, 525, 12, 51, 2 }, 5);
-            heap.Sort();
+            heap.SORT_TREE();
 
             Console.ReadKey();
 
